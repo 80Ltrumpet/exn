@@ -83,6 +83,7 @@
 
 mod error;
 mod exn;
+mod iter;
 mod macros;
 mod option;
 mod result;
@@ -91,6 +92,7 @@ mod result;
 pub use self::{
     error::ErrorExt,
     exn::{Exn, Frame},
+    iter::IteratorExt,
     option::OptionExt,
     result::{Ok, Result, ResultExt},
 };

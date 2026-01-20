@@ -7,6 +7,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added
+
+- Added `iter` module.
+  - Added `IteratorExt` trait.
+    - Added `collect_all` trait method.
+
 ### Changed
 
 - Converted from a multi-crate workspace into a single-crate workspace.
@@ -18,6 +24,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - Renamed `ext` to `error`.
   - Renamed `impls` to `exn`.
   - Flattened `debug` and `display` into `exn`.
+- Swapped the order of parameters for `Exn::raise_all`.
 - Changed the `Debug` implementation of `Frame` to reduce vertical whitespace and use Unicode
   box-drawing characters (`├─` and `└─`) instead of `|->`.
   - Updated code comments featuring `Debug`-style outputs accordingly.
