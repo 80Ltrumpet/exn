@@ -34,7 +34,7 @@ pub fn tree() -> Exn<Error> {
     let e11 = Error("E11").raise();
     let e12 = e11.raise(Error("E12"));
 
-    let e5 = Exn::raise_all(Error("E5"), [e3, e10, e12]);
+    let e5 = Exn::raise_all([e3, e10, e12], Error("E5"));
 
     let e2 = Error("E2").raise();
     let e4 = e2.raise(Error("E4"));
@@ -42,7 +42,7 @@ pub fn tree() -> Exn<Error> {
     let e7 = Error("E7").raise();
     let e8 = e7.raise(Error("E8"));
 
-    Exn::raise_all(Error("E6"), [e5, e4, e8])
+    Exn::raise_all([e5, e4, e8], Error("E6"))
 }
 
 pub fn linear() -> Exn<Error> {

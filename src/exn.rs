@@ -82,9 +82,9 @@ impl<E: Error + Send + Sync + 'static> Exn<E> {
         }
     }
 
-    /// Creates a new exception with the given `error` and its `children`.
+    /// Creates a new [`Exn`] with the given `error` and its `children`.
     #[track_caller]
-    pub fn raise_all<T, I>(error: E, children: I) -> Self
+    pub fn raise_all<T, I>(children: I, error: E) -> Self
     where
         T: Error + Send + Sync + 'static,
         I: IntoIterator,
@@ -99,15 +99,15 @@ impl<E: Error + Send + Sync + 'static> Exn<E> {
         new_exn
     }
 
-    /// Raise a new exception; this will make the current exception a child of the new one.
+    /// Creates a new [`Exn`] where `self` is its child.
     #[track_caller]
-    pub fn raise<T: Error + Send + Sync + 'static>(self, err: T) -> Exn<T> {
-        let mut new_exn = Exn::new(err);
+    pub fn raise<T: Error + Send + Sync + 'static>(self, error: T) -> Exn<T> {
+        let mut new_exn = Exn::new(error);
         new_exn.frame.children.push(*self.frame);
         new_exn
     }
 
-    /// Return the underlying exception frame.
+    /// Returns the underlying exception frame.
     #[must_use]
     pub fn frame(&self) -> &Frame {
         &self.frame
@@ -201,6 +201,7 @@ impl Frame {
         for (i, child) in children.iter().enumerate() {
             let child_children_len = child.children().len();
             if root && children_len == 1 && child_children_len == 1 {
+                // Flatten chains of single children to minimize indentation.
                 write!(f, "\n{prefix}├─ ")?;
                 child.debug_recursive(f, root, prefix)?;
             } else if i < children_len - 1 {
