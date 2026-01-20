@@ -1,0 +1,5 @@
+---
+source: tests/exn.rs
+expression: result.unwrap_err()
+---
+An error, at tests/exn.rs:51:25
