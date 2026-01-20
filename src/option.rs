@@ -40,6 +40,12 @@ impl<T> OptionExt for Option<T> {
         A: Error + Send + Sync + 'static,
         F: FnOnce() -> A,
     {
-        self.ok_or_else(|| Exn::new(err()))
+        // Note: We can't use `Option::ok_or_else` since `#[track_caller]` on closures is currently
+        // unstable.
+        if let Some(t) = self {
+            Ok(t)
+        } else {
+            Err(Exn::new(err()))
+        }
     }
 }
