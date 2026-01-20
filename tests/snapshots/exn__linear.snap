@@ -1,0 +1,10 @@
+---
+source: tests/exn.rs
+expression: e
+---
+topmost, at tests/exn.rs:23:32
+├─ E5, at tests/generate/mod.rs:53:8
+├─ E4, at tests/generate/mod.rs:52:17
+├─ E3, at tests/generate/mod.rs:51:17
+├─ E2, at tests/generate/mod.rs:50:17
+└─ E1, at tests/generate/mod.rs:49:26

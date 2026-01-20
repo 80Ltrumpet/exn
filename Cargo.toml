@@ -1,3 +1,5 @@
+# Copyright 2026 Andrew Lehmer (github.com/80Ltrumpet)
+#
 # Copyright 2025 FastLabs Developers
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,36 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[workspace]
-members = ["examples", "exn", "xtask"]
-resolver = "3"
-
-[workspace.package]
+[package]
+name = "exn"
+description = "Context-aware Rust `Error` handling"
 edition = "2024"
-homepage = "https://github.com/fast/exn"
+homepage = "https://github.com/80Ltrumpet/exn"
 license = "Apache-2.0"
+publish = false
 readme = "README.md"
-repository = "https://github.com/fast/exn"
+repository = "https://github.com/80Ltrumpet/exn"
+version = "0.1.0"
 
-[workspace.dependencies]
-# Workspace dependencies
-exn = { path = "exn" }
-
-# Crates.io dependencies
-clap = { version = "4.5.20", features = ["derive"] }
-derive_more = { version = "2.1.0", features = ["full"] }
-insta = { version = "1.45.1" }
-which = { version = "8.0.0" }
-
-[workspace.lints.rust]
-unexpected_cfgs = { level = "deny", check-cfg = ['cfg(windows_test)'] }
-unknown_lints = "deny"
-
-[workspace.lints.clippy]
-dbg_macro = "deny"
-
-[workspace.metadata.release]
-pre-release-commit-message = "chore: release v{{version}}"
-shared-version = true
-sign-tag = true
-tag-name = "v{{version}}"
+[dev-dependencies]
+insta = "1"
+thiserror = "2"

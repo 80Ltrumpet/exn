@@ -33,61 +33,67 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Check
+  fmt:
+    name: Format
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - name: Install toolchain
+      - uses: Swatinem/rust-cache@v2
+      - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
-          components: rustfmt,clippy
-      - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: typos-cli,taplo-cli,hawkeye
-      - run: cargo x lint
+          components: rustfmt
+      - run: |
+          cargo +nightly fmt
+            --all
+            --check
 
-  test:
-    name: Run tests
-    strategy:
-      matrix:
-        os: [ ubuntu-24.04, macos-14, windows-2022 ]
-        rust-version: [ "stable", "nightly" ]
-    runs-on: ${{ matrix.os }}
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
-      - name: Delete rust-toolchain.toml
-        run: rm rust-toolchain.toml
-      - name: Install toolchain
-        uses: dtolnay/rust-toolchain@master
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ matrix.rust-version }}
-      - name: Adjust snapshots on Windows
-        if: ${{ startsWith(matrix.os, 'windows') }}
+          components: clippy
+      - run: |
+          cargo clippy
+            --tests
+            --all-features
+            --all-targets
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: Swatinem/rust-cache@v2
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run all tests
         run: |
-          perl -i -pe 's/\//\\/g if /at exn/' exn/tests/snapshots/*.snap
-          perl -i -pe 's/(?<!\/)\/(?!\/)/\\/g if /examples\/src/' examples/src/*.rs
-        shell: bash
-      - name: Run unit tests
-        run: cargo x test --no-capture
-        shell: bash
+          cargo test
+            --
+            --nocapture
 
   required:
     name: Required
     runs-on: ubuntu-24.04
     if: ${{ always() }}
     needs:
-      - check
+      - fmt
+      - clippy
       - test
     steps:
       - name: Guardian
         run: |
           if [[ ! ( \
-                 "${{ needs.check.result }}" == "success" \
+                 "${{ needs.fmt.result }}" == "success" \
+              && "${{ needs.clippy.result }}" == "success" \
               && "${{ needs.test.result }}" == "success" \
               ) ]]; then
-            echo "Required jobs haven't been completed successfully."
+            echo "Required jobs did not succeed."
             exit -1
           fi

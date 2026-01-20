@@ -1,0 +1,5 @@
+---
+source: tests/exn.rs
+expression: result.unwrap_err()
+---
+An error, at C:/Users/Andrew Lehmer/source/repos/exn/src/option.rs:43:28
