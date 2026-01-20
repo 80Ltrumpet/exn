@@ -16,7 +16,7 @@ mod generate;
 
 use exn::{Exn, OptionExt, ResultExt};
 
-use generate::{Error, ErrorWithSource};
+use self::generate::{Error, ErrorWithSource};
 
 #[test]
 fn linear() {
