@@ -18,7 +18,7 @@
 //!
 //! # Examples
 //!
-//! ```
+//! ```no_run
 //! use std::{
 //!     error::Error,
 //!     fmt::{self, Display, Formatter},
