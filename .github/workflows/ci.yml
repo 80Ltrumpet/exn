@@ -44,8 +44,8 @@ jobs:
         with:
           components: rustfmt
       - run: |
-          cargo +nightly fmt
-            --all
+          cargo +nightly fmt \
+            --all \
             --check
 
   clippy:
@@ -59,9 +59,9 @@ jobs:
         with:
           components: clippy
       - run: |
-          cargo clippy
-            --tests
-            --all-features
+          cargo clippy \
+            --tests \
+            --all-features \
             --all-targets
 
   test:
@@ -74,8 +74,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Run all tests
         run: |
-          cargo test
-            --
+          cargo test \
+            -- \
             --nocapture
 
   required:
