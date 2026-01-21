@@ -7,6 +7,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-01-21
+
 ### Changed
 
 - Expanded `Exn`'s `From` implementation to accept any `Error` that is convertible to the contained
@@ -77,6 +79,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Forked from [fast/exn] at commit
   [85b12a4c6382611192f700b32a4556e0633becc1](https://github.com/fast/exn/commit/85b12a4c6382611192f700b32a4556e0633becc1)
 
-[Unreleased]: https://github.com/80Ltrumpet/exn/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/80Ltrumpet/exn/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/80Ltrumpet/exn/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/80Ltrumpet/exn/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/80Ltrumpet/exn/releases/tag/v0.1.0
