@@ -5,4 +5,8 @@ expression: result.unwrap_err()
 context
 
 Caused by:
-    E5, at tests/generate/mod.rs:57:12
+    0: E5, at tests/generate/mod.rs:57:12
+    1: E4
+    2: E3
+    3: E2
+    4: E1
