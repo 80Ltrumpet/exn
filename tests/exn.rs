@@ -1,3 +1,5 @@
+// Copyright 2026 Andrew Lehmer (github.com/80Ltrumpet)
+//
 // Copyright 2025 FastLabs Developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,42 +16,56 @@
 
 mod generate;
 
-use exn::{Exn, OptionExt, ResultExt};
+use exn::{Exn, OptionExt, repr, ResultExt};
 
-use self::generate::{Error, ErrorWithSource};
+use self::generate::Error;
 
 #[test]
-fn linear() {
-    let e = generate::linear().raise(Error("topmost"));
-    assert_eq!(e.to_string(), "topmost");
-    insta::assert_debug_snapshot!(e);
+fn list_repr_tree() {
+    let e = generate::list::<repr::Tree>().unwrap_err();
+    insta::assert_compact_debug_snapshot!(e);
 }
 
 #[test]
-fn tree_error() {
-    let e = generate::tree().raise(Error("topmost"));
-    assert_eq!(e.to_string(), "topmost");
-    insta::assert_debug_snapshot!(e);
+fn list_repr_list() {
+    let e = generate::list::<repr::List>().unwrap_err();
+    insta::assert_compact_debug_snapshot!(e);
+}
+
+#[test]
+fn tree_repr_tree() {
+    let e = generate::tree::<repr::Tree>().unwrap_err();
+    insta::assert_compact_debug_snapshot!(e);
+}
+
+#[test]
+fn tree_repr_list() {
+    let e = generate::tree::<repr::List>().unwrap_err();
+    insta::assert_compact_debug_snapshot!(e);
 }
 
 #[test]
 fn new_with_source() {
+    #[derive(Debug, thiserror::Error)]
+    #[error("{0}")]
+    struct ErrorWithSource(&'static str, #[source] Error);
+
     let e = Exn::new(ErrorWithSource("top", Error("source")));
-    insta::assert_debug_snapshot!(e);
+    insta::assert_compact_debug_snapshot!(e);
 }
 
 #[test]
 fn result_ext() {
     let result: Result<(), Error> = Err(Error("An error"));
     let result = result.or_raise(|| Error("Another error"));
-    insta::assert_debug_snapshot!(result.unwrap_err());
+    insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
 fn option_ext() {
     let result: Option<()> = None;
     let result = result.ok_or_raise(|| Error("An error"));
-    insta::assert_debug_snapshot!(result.unwrap_err());
+    insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
@@ -60,7 +76,7 @@ fn from_error() {
     }
 
     let result = foo();
-    insta::assert_debug_snapshot!(result.unwrap_err());
+    insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
@@ -70,7 +86,7 @@ fn bail() {
     }
 
     let result = foo();
-    insta::assert_debug_snapshot!(result.unwrap_err());
+    insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
@@ -91,5 +107,5 @@ fn ensure_fail() {
     }
 
     let result = foo();
-    insta::assert_debug_snapshot!(result.unwrap_err());
+    insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }

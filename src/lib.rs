@@ -81,6 +81,8 @@
 #![deny(missing_docs)]
 #![warn(clippy::pedantic, clippy::map_err_ignore)]
 
+pub mod repr;
+
 mod error;
 mod exn;
 mod iter;
@@ -90,6 +92,7 @@ mod result;
 
 #[doc(inline)]
 pub use self::{
+    repr::{ExnAny, Repr},
     error::ErrorExt,
     exn::{Exn, Frame},
     iter::IteratorExt,

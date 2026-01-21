@@ -9,9 +9,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Added `iter` module.
-  - Added `IteratorExt` trait.
-    - Added `collect_all` trait method.
+- `iter` module
+  - `IteratorExt` extension trait
+    - `collect_all` trait method
+- `repr` module
+  - `Repr` marker trait
+  - `ExnAny` for type-erasure to `std::error::Error`
+  - `Anyhow`, `List`, and `Tree` representations (`Repr` implementations)
+- Consuming conversion methods for `Exn` and `Frame`
+- Alternate `Debug` formats (via `"{:#?}"`) for `Exn` and `Frame`
+- Tests for all first-party representations
 
 ### Changed
 

@@ -112,6 +112,12 @@ impl<E: Error + Send + Sync + 'static> Exn<E> {
     pub fn frame(&self) -> &Frame {
         &self.frame
     }
+
+    /// Converts this [`Exn`] into its underlying exception frame.
+    #[must_use]
+    pub fn into_frame(self) -> Frame {
+        *self.frame
+    }
 }
 
 impl<E> Deref for Exn<E>
@@ -130,7 +136,13 @@ where
 
 impl<E: Error + Send + Sync + 'static> Debug for Exn<E> {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        self.frame().debug(f)
+        if f.alternate() {
+            f.debug_struct("Exn")
+                .field("frame", self.frame())
+                .finish_non_exhaustive()
+        } else {
+            Debug::fmt(self.frame(), f)
+        }
     }
 }
 
@@ -178,8 +190,22 @@ impl Frame {
         &self.children
     }
 
+    /// Converts this [`Frame`] into its error and its children.
+    #[must_use]
+    pub fn consume(self) -> (Box<dyn Error + Send + Sync + 'static>, Vec<Self>) {
+        (self.error, self.children)
+    }
+
     fn debug(&self, f: &mut Formatter) -> fmt::Result {
-        self.debug_recursive(f, true, "")
+        if f.alternate() {
+            f.debug_struct("Frame")
+                .field("error", self.error())
+                .field("location", self.location)
+                .field("children", &self.children)
+                .finish()
+        } else {
+            self.debug_recursive(f, true, "")
+        }
     }
 
     fn debug_recursive(&self, f: &mut Formatter, root: bool, prefix: &str) -> fmt::Result {

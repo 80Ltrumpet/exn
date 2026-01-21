@@ -2,4 +2,4 @@
 source: tests/exn.rs
 expression: result.unwrap_err()
 ---
-An error, at tests/exn.rs:89:9
+An error, at tests/exn.rs:103:9

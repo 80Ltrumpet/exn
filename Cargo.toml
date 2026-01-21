@@ -26,5 +26,6 @@ repository = "https://github.com/80Ltrumpet/exn"
 version = "0.1.0"
 
 [dev-dependencies]
+anyhow = "1"
 insta = "1"
 thiserror = "2"

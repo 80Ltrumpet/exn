@@ -1,0 +1,8 @@
+---
+source: tests/anyhow.rs
+expression: result.unwrap_err()
+---
+context
+
+Caused by:
+    E6, at tests/generate/mod.rs:45:9

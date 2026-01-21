@@ -1,0 +1,9 @@
+---
+source: tests/exn.rs
+expression: e
+---
+E5, at tests/generate/mod.rs:57:12
+├─ E4, at tests/generate/mod.rs:56:17
+├─ E3, at tests/generate/mod.rs:55:17
+├─ E2, at tests/generate/mod.rs:54:17
+└─ E1, at tests/generate/mod.rs:53:26

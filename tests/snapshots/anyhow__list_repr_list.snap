@@ -1,0 +1,8 @@
+---
+source: tests/anyhow.rs
+expression: result.unwrap_err()
+---
+context
+
+Caused by:
+    E5, at tests/generate/mod.rs:57:12
