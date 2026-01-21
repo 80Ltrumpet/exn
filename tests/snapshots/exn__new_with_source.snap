@@ -2,5 +2,5 @@
 source: tests/exn.rs
 expression: e
 ---
-top, at tests/exn.rs:51:13
-└─ source, at tests/exn.rs:51:13
+top, at tests/exn.rs:53:13
+└─ source, at tests/exn.rs:53:13
