@@ -92,10 +92,10 @@ mod result;
 
 #[doc(inline)]
 pub use self::{
-    repr::{ExnAny, Repr},
     error::ErrorExt,
     exn::{Exn, Frame},
     iter::IteratorExt,
     option::OptionExt,
+    repr::{ExnAny, Repr},
     result::{Ok, Result, ResultExt},
 };

@@ -23,8 +23,8 @@ use std::{
     marker::PhantomData,
 };
 
-use crate::Exn;
 use super::{Repr, Tree};
+use crate::Exn;
 
 /// [`ExnAny`] representation for interoperation with [the `anyhow` crate]
 ///
@@ -68,7 +68,8 @@ use super::{Repr, Tree};
 pub struct Anyhow<T: Repr = Tree>(PhantomData<T>);
 
 impl<R: Repr> Repr for Anyhow<R> {
-    type Impl<T> = AnyhowExn<R::Impl<T>>
+    type Impl<T>
+        = AnyhowExn<R::Impl<T>>
     where
         T: Error + Send + Sync + 'static;
 }

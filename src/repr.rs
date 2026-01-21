@@ -18,19 +18,14 @@ mod anyhow;
 mod list;
 mod tree;
 
-#[doc(inline)]
-pub use self::{
-    anyhow::Anyhow,
-    list::List,
-    tree::Tree,
-};
-
 use std::{
     error::Error,
     fmt::{Debug, Display, Formatter, Result},
     marker::PhantomData,
 };
 
+#[doc(inline)]
+pub use self::{anyhow::Anyhow, list::List, tree::Tree};
 use crate::Exn;
 
 /// [`ExnAny`] representation marker trait
@@ -46,13 +41,13 @@ pub trait Repr {
 
 /// Type-erased [`Exn`] that implements [`Error`]
 ///
-/// [`ExnAny`] is convertible from any [`Exn`], so it is suitable for application-level errors (similar
-/// to [`anyhow::Error`]):
+/// [`ExnAny`] is convertible from any [`Exn`], so it is suitable for application-level errors
+/// (similar to [`anyhow::Error`]):
 ///
 /// ```no_run
-/// use std::{io, fmt};
+/// use std::{fmt, io};
 ///
-/// use exn::ErrorExt;
+/// use exn::{ErrorExt, ExnAny};
 ///
 /// fn foo() -> exn::Result<(), fmt::Error> {
 ///     Err(fmt::Error.raise())
@@ -73,7 +68,7 @@ pub trait Repr {
 ///
 /// Any type that implements [`Repr`] may be provided as a type parameter to [`ExnAny`] ([`Tree`]
 /// is the default).
-/// 
+///
 /// For an example of how to define a custom representation, see [`Repr`]'s docs.
 ///
 /// [`anyhow::Error`]: https://docs.rs/anyhow/latest/anyhow/struct.Error.html
@@ -107,4 +102,8 @@ impl<T: Repr> Display for ExnAny<T> {
     }
 }
 
-impl<T: Repr> Error for ExnAny<T> {}
+impl<T: Repr> Error for ExnAny<T> {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        self.error.source()
+    }
+}

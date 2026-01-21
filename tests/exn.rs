@@ -16,7 +16,7 @@
 
 mod generate;
 
-use exn::{Exn, OptionExt, repr, ResultExt};
+use exn::{Exn, OptionExt, ResultExt, repr};
 
 use self::generate::Error;
 

@@ -30,7 +30,7 @@ use crate::{Exn, Frame, Repr};
 /// ```
 /// use std::{error::Error, io};
 ///
-/// use exn::{ExnAny, repr};
+/// use exn::{ErrorExt, ExnAny, repr};
 ///
 /// fn make_exn() -> exn::Result<(), io::Error> {
 ///     let child = io::Error::other("child").raise();
@@ -70,7 +70,8 @@ use crate::{Exn, Frame, Repr};
 pub struct List;
 
 impl Repr for List {
-    type Impl<T> = ListExn<T>
+    type Impl<T>
+        = ListExn<T>
     where
         T: Error + Send + Sync + 'static;
 }
@@ -107,7 +108,10 @@ where
     }
 }
 
-impl<T> Error for ListExn<T> where T: Error + Send + Sync + 'static {
+impl<T> Error for ListExn<T>
+where
+    T: Error + Send + Sync + 'static,
+{
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         self.frame.source()
     }

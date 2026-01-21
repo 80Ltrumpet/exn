@@ -25,7 +25,8 @@ use crate::{Exn, Repr};
 pub struct Tree;
 
 impl Repr for Tree {
-    type Impl<T> = TreeExn<T>
+    type Impl<T>
+        = TreeExn<T>
     where
         T: Error + Send + Sync + 'static;
 }
