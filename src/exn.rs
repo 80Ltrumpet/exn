@@ -152,10 +152,14 @@ impl<E: Error + Send + Sync + 'static> Display for Exn<E> {
     }
 }
 
-impl<E: Error + Send + Sync + 'static> From<E> for Exn<E> {
+impl<T, E> From<T> for Exn<E>
+where
+    T: Error + Into<E>,
+    E: Error + Send + Sync + 'static,
+{
     #[track_caller]
-    fn from(error: E) -> Self {
-        Exn::new(error)
+    fn from(error: T) -> Self {
+        Exn::new(error.into())
     }
 }
 

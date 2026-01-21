@@ -7,6 +7,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Expanded `Exn`'s `From` implementation to accept any `Error` that is convertible to the contained
+  error type (i.e., `Into<E>`).
+  - This improves support for existing `Error` implementations that are (or store) `enum`s of other
+    `Error`s—particularly from external crates.
+
 ## [0.2.0] - 2026-01-21
 
 ### Added
