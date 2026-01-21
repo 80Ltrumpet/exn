@@ -69,8 +69,6 @@ pub trait Repr {
 /// Any type that implements [`Repr`] may be provided as a type parameter to [`ExnAny`] ([`Tree`]
 /// is the default).
 ///
-/// For an example of how to define a custom representation, see [`Repr`]'s docs.
-///
 /// [`anyhow::Error`]: https://docs.rs/anyhow/latest/anyhow/struct.Error.html
 pub struct ExnAny<T: Repr = Tree> {
     error: Box<dyn Error + Send + Sync + 'static>,
