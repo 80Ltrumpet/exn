@@ -1,0 +1,19 @@
+---
+source: tests/anyhow.rs
+expression: result.unwrap_err()
+---
+context
+
+Caused by:
+    E6, at tests/generate/mod.rs:45:9
+    ├─ E5, at tests/generate/mod.rs:37:14
+    │  ├─ E3, at tests/generate/mod.rs:29:17
+    │  │  └─ E1, at tests/generate/mod.rs:28:26
+    │  ├─ E10, at tests/generate/mod.rs:32:18
+    │  │  └─ E9, at tests/generate/mod.rs:31:26
+    │  └─ E12, at tests/generate/mod.rs:35:19
+    │     └─ E11, at tests/generate/mod.rs:34:28
+    ├─ E4, at tests/generate/mod.rs:40:17
+    │  └─ E2, at tests/generate/mod.rs:39:26
+    └─ E8, at tests/generate/mod.rs:43:17
+       └─ E7, at tests/generate/mod.rs:42:26

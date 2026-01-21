@@ -14,17 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use exn::{ErrorExt, Exn};
+use exn::{ErrorExt, Exn, ExnAny, Repr};
 
 #[derive(Debug, thiserror::Error)]
 #[error("{0}")]
 pub struct Error(pub &'static str);
 
-#[derive(Debug, thiserror::Error)]
-#[error("{0}")]
-pub struct ErrorWithSource(pub &'static str, #[source] pub Error);
-
-pub fn tree() -> Exn<Error> {
+pub fn tree<T>() -> Result<(), ExnAny<T>>
+where
+    T: Repr,
+    ExnAny<T>: From<Exn<Error>>,
+{
     let e1 = Error("E1").raise();
     let e3 = e1.raise(Error("E3"));
 
@@ -42,13 +42,17 @@ pub fn tree() -> Exn<Error> {
     let e7 = Error("E7").raise();
     let e8 = e7.raise(Error("E8"));
 
-    Exn::raise_all([e5, e4, e8], Error("E6"))
+    Err(Exn::raise_all([e5, e4, e8], Error("E6")).into())
 }
 
-pub fn linear() -> Exn<Error> {
+pub fn list<T>() -> Result<(), ExnAny<T>>
+where
+    T: Repr,
+    ExnAny<T>: From<Exn<Error>>,
+{
     let e1 = Error("E1").raise();
     let e2 = e1.raise(Error("E2"));
     let e3 = e2.raise(Error("E3"));
     let e4 = e3.raise(Error("E4"));
-    e4.raise(Error("E5"))
+    Err(e4.raise(Error("E5")).into())
 }
