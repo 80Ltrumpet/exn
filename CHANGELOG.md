@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+
+## [0.2.0] - 2026-01-21
 
 ### Added
 
@@ -19,6 +21,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Consuming conversion methods for `Exn` and `Frame`
 - Alternate `Debug` formats (via `"{:#?}"`) for `Exn` and `Frame`
 - Tests for all first-party representations
+- `.markdownlint.json`
 
 ### Changed
 
@@ -67,4 +70,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Forked from [fast/exn] at commit
   [85b12a4c6382611192f700b32a4556e0633becc1](https://github.com/fast/exn/commit/85b12a4c6382611192f700b32a4556e0633becc1)
 
+[Unreleased]: https://github.com/80Ltrumpet/exn/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/80Ltrumpet/exn/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/80Ltrumpet/exn/releases/tag/v0.1.0
