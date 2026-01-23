@@ -70,24 +70,15 @@ use crate::{Exn, Frame, Repr};
 pub struct List;
 
 impl Repr for List {
-    type Impl<T>
-        = ListExn<T>
-    where
-        T: Error + Send + Sync + 'static;
+    type Impl<T: Error + Send + Sync + 'static> = ListExn<T>;
 }
 
-pub struct ListExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+pub struct ListExn<T: Error + Send + Sync + 'static> {
     frame: Box<ListFrame>,
     _t: PhantomData<T>,
 }
 
-impl<T> Debug for ListExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Debug for ListExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if f.alternate() {
             f.debug_struct("ListExn")
@@ -99,28 +90,19 @@ where
     }
 }
 
-impl<T> Display for ListExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Display for ListExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         Display::fmt(&self.frame, f)
     }
 }
 
-impl<T> Error for ListExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Error for ListExn<T> {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         self.frame.source()
     }
 }
 
-impl<T> From<Exn<T>> for ListExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> From<Exn<T>> for ListExn<T> {
     fn from(exn: Exn<T>) -> Self {
         Self {
             frame: Box::new(exn.into_frame().into()),

@@ -120,10 +120,7 @@ impl<E: Error + Send + Sync + 'static> Exn<E> {
     }
 }
 
-impl<E> Deref for Exn<E>
-where
-    E: Error + Send + Sync + 'static,
-{
+impl<E: Error + Send + Sync + 'static> Deref for Exn<E> {
     type Target = E;
 
     fn deref(&self) -> &Self::Target {

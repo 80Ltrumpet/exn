@@ -25,40 +25,26 @@ use crate::{Exn, Repr};
 pub struct Tree;
 
 impl Repr for Tree {
-    type Impl<T>
-        = TreeExn<T>
-    where
-        T: Error + Send + Sync + 'static;
+    type Impl<T: Error + Send + Sync + 'static> = TreeExn<T>;
 }
 
-pub struct TreeExn<T>(Exn<T>)
-where
-    T: Error + Send + Sync + 'static;
+pub struct TreeExn<T: Error + Send + Sync + 'static>(Exn<T>);
 
-impl<T> Debug for TreeExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Debug for TreeExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         Debug::fmt(&self.0, f)
     }
 }
 
-impl<T> Display for TreeExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Display for TreeExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         Display::fmt(&self.0, f)
     }
 }
 
-impl<T> Error for TreeExn<T> where T: Error + Send + Sync + 'static {}
+impl<T: Error + Send + Sync + 'static> Error for TreeExn<T> {}
 
-impl<T> From<Exn<T>> for TreeExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> From<Exn<T>> for TreeExn<T> {
     fn from(exn: Exn<T>) -> Self {
         Self(exn)
     }

@@ -68,29 +68,18 @@ use crate::Exn;
 pub struct Anyhow<T: Repr = Tree>(PhantomData<T>);
 
 impl<R: Repr> Repr for Anyhow<R> {
-    type Impl<T>
-        = AnyhowExn<R::Impl<T>>
-    where
-        T: Error + Send + Sync + 'static;
+    type Impl<T: Error + Send + Sync + 'static> = AnyhowExn<R::Impl<T>>;
 }
 
-pub struct AnyhowExn<T>(T)
-where
-    T: Error + Send + Sync + 'static;
+pub struct AnyhowExn<T: Error + Send + Sync + 'static>(T);
 
-impl<T> Debug for AnyhowExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Debug for AnyhowExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         Debug::fmt(&self.0, f)
     }
 }
 
-impl<T> Display for AnyhowExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Display for AnyhowExn<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         // This is _not_ a typo! We want to use the underlying `Debug` representation in the
         // rendering of the source chain.
@@ -98,10 +87,7 @@ where
     }
 }
 
-impl<T> Error for AnyhowExn<T>
-where
-    T: Error + Send + Sync + 'static,
-{
+impl<T: Error + Send + Sync + 'static> Error for AnyhowExn<T> {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         self.0.source()
     }

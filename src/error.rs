@@ -30,4 +30,4 @@ pub trait ErrorExt: Error + Send + Sync + 'static {
     }
 }
 
-impl<T> ErrorExt for T where T: Error + Send + Sync + 'static {}
+impl<T: Error + Send + Sync + 'static> ErrorExt for T {}
