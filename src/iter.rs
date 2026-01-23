@@ -42,7 +42,7 @@ pub trait IteratorExt<T, E>: Iterator<Item = Result<T, E>> {
     ///             std::fs::File::open(path)
     ///                 .or_raise(|| Error::other(format!("failed to open {path}")))
     ///         })
-    ///         .collect_all::<_, Vec<_>>()
+    ///         .collect_all::<_, Vec<Exn<Error>>>()
     ///         .map_err(|children| Exn::raise_all(children, Error::other("example")))?;
     ///
     ///     // Do stuff with files…

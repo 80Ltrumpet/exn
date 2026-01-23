@@ -16,7 +16,7 @@
 
 mod generate;
 
-use exn::{Exn, OptionExt, ResultExt, repr};
+use exn::{Exn, OptionExt, Result, ResultExt, repr};
 
 use self::generate::Error;
 
@@ -56,21 +56,21 @@ fn new_with_source() {
 
 #[test]
 fn result_ext() {
-    let result: Result<(), Error> = Err(Error("An error"));
-    let result = result.or_raise(|| Error("Another error"));
+    let result = Err::<(), _>(Error("An error"));
+    let result: Result<(), Error> = result.or_raise(|| Error("Another error"));
     insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
 fn option_ext() {
-    let result: Option<()> = None;
-    let result = result.ok_or_raise(|| Error("An error"));
+    let result = None::<()>;
+    let result: Result<(), Error> = result.ok_or_raise(|| Error("An error"));
     insta::assert_compact_debug_snapshot!(result.unwrap_err());
 }
 
 #[test]
 fn from_error() {
-    fn foo() -> exn::Result<(), Error> {
+    fn foo() -> Result<(), Error> {
         Err(Error("An error"))?;
         Ok(())
     }
@@ -81,7 +81,7 @@ fn from_error() {
 
 #[test]
 fn bail() {
-    fn foo() -> exn::Result<(), Error> {
+    fn foo() -> Result<(), Error> {
         exn::bail!(Error("An error"));
     }
 
@@ -91,7 +91,7 @@ fn bail() {
 
 #[test]
 fn ensure_ok() {
-    fn foo() -> exn::Result<(), Error> {
+    fn foo() -> Result<(), Error> {
         exn::ensure!(true, Error("An error"));
         Ok(())
     }
@@ -101,7 +101,7 @@ fn ensure_ok() {
 
 #[test]
 fn ensure_fail() {
-    fn foo() -> exn::Result<(), Error> {
+    fn foo() -> Result<(), Error> {
         exn::ensure!(false, Error("An error"));
         Ok(())
     }

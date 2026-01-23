@@ -7,6 +7,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Relaxed the constraint on the return type of the `err` (`FnOnce`) parameter for both
+  `OptionExt::ok_or_raise` and `ResultExt::or_raise` to allow anything convertible to the error
+  type contained in the output `Err` variant's `Exn`.
+  - This makes using these extension trait methods more ergonomic in some situations, but it may
+    require more explicit type annotations in others—e.g., when used in `Iterator::map` closures.
+  - ⚠️ Due to the potential need for adjusting call sites with previously unnecessary type
+    annotations, this is considered a **_breaking change_**.
+
 ## [0.2.1] - 2026-01-21
 
 ### Changed
