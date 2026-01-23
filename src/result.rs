@@ -28,9 +28,10 @@ pub trait ResultExt {
 
     /// Raises the [`Err`] variant as a new [`Exn`] whose context is provided by `err`.
     #[expect(clippy::missing_errors_doc, reason = "similar to `Result::map_err`")]
-    fn or_raise<A, F>(self, err: F) -> Result<Self::Success, A>
+    fn or_raise<A, B, F>(self, err: F) -> Result<Self::Success, B>
     where
-        A: Error + Send + Sync + 'static,
+        A: Into<B>,
+        B: Error + Send + Sync + 'static,
         F: FnOnce() -> A;
 }
 
@@ -41,16 +42,17 @@ where
     type Success = T;
 
     #[track_caller]
-    fn or_raise<A, F>(self, err: F) -> Result<Self::Success, A>
+    fn or_raise<A, B, F>(self, err: F) -> Result<Self::Success, B>
     where
-        A: Error + Send + Sync + 'static,
+        A: Into<B>,
+        B: Error + Send + Sync + 'static,
         F: FnOnce() -> A,
     {
         // Note: We can't use `Result::map_err` since `#[track_caller]` on closures is currently
         // unstable.
         match self {
             Self::Ok(t) => Result::Ok(t),
-            Self::Err(e) => Result::Err(Exn::new(e).raise(err())),
+            Self::Err(e) => Result::Err(Exn::new(e).raise(err().into())),
         }
     }
 }
@@ -62,16 +64,17 @@ where
     type Success = T;
 
     #[track_caller]
-    fn or_raise<A, F>(self, err: F) -> Result<Self::Success, A>
+    fn or_raise<A, B, F>(self, err: F) -> Result<Self::Success, B>
     where
-        A: Error + Send + Sync + 'static,
+        A: Into<B>,
+        B: Error + Send + Sync + 'static,
         F: FnOnce() -> A,
     {
         // Note: We can't use `Result::map_err` since `#[track_caller]` on closures is currently
         // unstable.
         match self {
             Self::Ok(t) => Result::Ok(t),
-            Self::Err(e) => Result::Err(e.raise(err())),
+            Self::Err(e) => Result::Err(e.raise(err().into())),
         }
     }
 }

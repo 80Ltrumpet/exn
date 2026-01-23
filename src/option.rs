@@ -25,9 +25,10 @@ pub trait OptionExt {
 
     /// Raises a new [`Exn`] if `self` is [`None`].
     #[expect(clippy::missing_errors_doc, reason = "similar to `Result::map_err`")]
-    fn ok_or_raise<A, F>(self, err: F) -> Result<Self::Some, A>
+    fn ok_or_raise<A, B, F>(self, err: F) -> Result<Self::Some, B>
     where
-        A: Error + Send + Sync + 'static,
+        A: Into<B>,
+        B: Error + Send + Sync + 'static,
         F: FnOnce() -> A;
 }
 
@@ -35,9 +36,10 @@ impl<T> OptionExt for Option<T> {
     type Some = T;
 
     #[track_caller]
-    fn ok_or_raise<A, F>(self, err: F) -> Result<T, A>
+    fn ok_or_raise<A, B, F>(self, err: F) -> Result<T, B>
     where
-        A: Error + Send + Sync + 'static,
+        A: Into<B>,
+        B: Error + Send + Sync + 'static,
         F: FnOnce() -> A,
     {
         // Note: We can't use `Option::ok_or_else` since `#[track_caller]` on closures is currently
@@ -45,7 +47,7 @@ impl<T> OptionExt for Option<T> {
         if let Some(t) = self {
             Ok(t)
         } else {
-            Err(Exn::new(err()))
+            Err(Exn::new(err().into()))
         }
     }
 }
