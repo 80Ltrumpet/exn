@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! [`ExnAny`] representation for interoperation with [the `anyhow` crate]
+//! [`ExnAny`] representation for interoperation with the [`anyhow`] crate
 //!
 //! [`ExnAny`]: crate::ExnAny
-//! [the `anyhow` crate]: https://docs.rs/anyhow/latest/anyhow/
 
 use std::{
     error::Error,
@@ -26,7 +25,7 @@ use std::{
 use super::{Repr, Tree};
 use crate::Exn;
 
-/// [`ExnAny`] representation for interoperation with [the `anyhow` crate]
+/// [`ExnAny`] representation for interoperation with the [`anyhow`] crate
 ///
 /// # Example
 ///
@@ -61,10 +60,14 @@ use crate::Exn;
 /// # Sub-representations
 ///
 /// [`Anyhow`] takes an optional type parameter that controls how [`Exn`]s are represented in
+/// [`anyhow::Error`]'s [`Debug`] format. The default is [`Tree`], which preserves [`Exn`]'s
+/// internal structure, and thus causes the entire tree to appear as a single item in the source
+/// chain. [`List`] coerces [`Exn`] into a linear source chain, which may look more natural in the
+/// context of [`anyhow`].
 ///
 /// [`ExnAny`]: crate::ExnAny
-/// [the `anyhow` crate]: https://docs.rs/anyhow/latest/anyhow/
 /// [`Exn`]: crate::Exn
+/// [`List`]: crate::repr::List
 pub struct Anyhow<T: Repr = Tree>(PhantomData<T>);
 
 impl<R: Repr> Repr for Anyhow<R> {
