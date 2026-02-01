@@ -12,17 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{
-    error::Error,
-    fmt::{Debug, Display, Formatter, Result},
-    marker::PhantomData,
-    panic::Location,
-};
+use std::error::Error;
 
-use crate::{Exn, Frame, Repr};
+use crate::{Frame, Repr};
 
 /// [`ExnAny`] representation that coerces the exception tree into an [`Error::source`] chain
-/// by recursively assigning only the first child frame as the source of its parent frame
 ///
 /// The [`Debug`] representation of this [`Repr`], unlike [`Exn`], does _not_ traverse the source
 /// chain.
@@ -70,104 +64,5 @@ use crate::{Exn, Frame, Repr};
 pub struct List;
 
 impl Repr for List {
-    type Impl<T: Error + Send + Sync + 'static> = ListExn<T>;
-}
-
-pub struct ListExn<T: Error + Send + Sync + 'static> {
-    frame: Box<ListFrame>,
-    _t: PhantomData<T>,
-}
-
-impl<T: Error + Send + Sync + 'static> Debug for ListExn<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        if f.alternate() {
-            f.debug_struct("ListExn")
-                .field("frame", &*self.frame)
-                .finish_non_exhaustive()
-        } else {
-            Debug::fmt(&self.frame, f)
-        }
-    }
-}
-
-impl<T: Error + Send + Sync + 'static> Display for ListExn<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        Display::fmt(&self.frame, f)
-    }
-}
-
-impl<T: Error + Send + Sync + 'static> Error for ListExn<T> {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        self.frame.source()
-    }
-}
-
-impl<T: Error + Send + Sync + 'static> From<Exn<T>> for ListExn<T> {
-    fn from(exn: Exn<T>) -> Self {
-        Self {
-            frame: Box::new(exn.into_frame().into()),
-            _t: PhantomData,
-        }
-    }
-}
-
-struct ListFrame {
-    error: Box<dyn Error + Send + Sync + 'static>,
-    location: &'static Location<'static>,
-    source: Option<Box<ListFrame>>,
-}
-
-impl ListFrame {
-    fn as_dyn_error(&self) -> &(dyn Error + 'static) {
-        self
-    }
-}
-
-impl Debug for ListFrame {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        if f.alternate() {
-            f.debug_struct("ListFrame")
-                .field("error", &*self.error)
-                .field("location", self.location)
-                .field("source", &self.source)
-                .finish()
-        } else {
-            write!(
-                f,
-                "{}, at {}:{}:{}",
-                &*self.error,
-                self.location.file(),
-                self.location.line(),
-                self.location.column()
-            )
-        }
-    }
-}
-
-impl Display for ListFrame {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        Display::fmt(&*self.error, f)
-    }
-}
-
-impl Error for ListFrame {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        self.source.as_deref().map(Self::as_dyn_error)
-    }
-}
-
-impl From<Frame> for ListFrame {
-    fn from(frame: Frame) -> Self {
-        let location = frame.location();
-        let (error, children) = frame.consume();
-        let source = children
-            .into_iter()
-            .next()
-            .map(|frame| Box::new(frame.into()));
-        Self {
-            error,
-            location,
-            source,
-        }
-    }
+    type Impl<T: Error + Send + Sync + 'static> = Frame;
 }

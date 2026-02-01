@@ -107,13 +107,14 @@ impl<E: Error + Send + Sync + 'static> Exn<E> {
         new_exn
     }
 
-    /// Returns the underlying exception frame.
+    /// Returns a reference to the underlying exception frame.
     #[must_use]
     pub fn frame(&self) -> &Frame {
         &self.frame
     }
 
     /// Converts this [`Exn`] into its underlying exception frame.
+    #[deprecated(since = "0.3.1", note = "Use `Frame::from` instead")]
     #[must_use]
     pub fn into_frame(self) -> Frame {
         *self.frame
@@ -138,7 +139,7 @@ impl<E: Error + Send + Sync + 'static> Debug for Exn<E> {
                 .field("frame", self.frame())
                 .finish_non_exhaustive()
         } else {
-            Debug::fmt(self.frame(), f)
+            self.frame.debug_full(f)
         }
     }
 }
@@ -197,30 +198,28 @@ impl Frame {
         (self.error, self.children)
     }
 
-    fn debug(&self, f: &mut Formatter) -> fmt::Result {
-        if f.alternate() {
-            f.debug_struct("Frame")
-                .field("error", self.error())
-                .field("location", self.location)
-                .field("children", &self.children)
-                .finish()
-        } else {
-            self.debug_recursive(f, true, "")
-        }
+    /// Performs standard [`Debug`] formatting for only this [`Frame`] (i.e., excluding children).
+    #[expect(clippy::missing_errors_doc, reason = "fmt::Result")]
+    pub fn debug(&self, f: &mut Formatter) -> fmt::Result {
+        let location = self.location();
+        write!(
+            f,
+            "{}, at {}:{}:{}",
+            self.error(),
+            location.file(),
+            location.line(),
+            location.column()
+        )
+    }
+
+    /// Performs standard [`Debug`] formatting for this [`Frame`] and its children recursively.
+    #[expect(clippy::missing_errors_doc, reason = "fmt::Result")]
+    pub fn debug_full(&self, f: &mut Formatter) -> fmt::Result {
+        self.debug_recursive(f, true, "")
     }
 
     fn debug_recursive(&self, f: &mut Formatter, root: bool, prefix: &str) -> fmt::Result {
-        {
-            let location = self.location();
-            write!(
-                f,
-                "{}, at {}:{}:{}",
-                self.error(),
-                location.file(),
-                location.line(),
-                location.column()
-            )?;
-        }
+        self.debug(f)?;
 
         let children = self.children();
         let children_len = children.len();
@@ -246,12 +245,34 @@ impl Frame {
 
 impl Debug for Frame {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        self.debug(f)
+        if f.alternate() {
+            f.debug_struct("Frame")
+                .field("error", self.error())
+                .field("location", self.location)
+                .field("children", &self.children)
+                .finish()
+        } else {
+            self.debug(f)
+        }
     }
 }
 
 impl Display for Frame {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         Display::fmt(self.error(), f)
+    }
+}
+
+impl Error for Frame {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        self.children
+            .first()
+            .map(|child| child as &(dyn Error + 'static))
+    }
+}
+
+impl<E: Error + Send + Sync + 'static> From<Exn<E>> for Frame {
+    fn from(exn: Exn<E>) -> Self {
+        *exn.frame
     }
 }

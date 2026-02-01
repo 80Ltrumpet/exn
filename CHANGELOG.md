@@ -7,6 +7,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `impl<E: …> From<Exn<E>> for Frame`
+  - ⚠️ This obviates `Exn::into_frame`, which is now marked as _deprecated_.
+- `impl std::error::Error for Frame`
+  - `source` returns only the first child.
+  - This makes `repr::list::ListExn` redundant and removes a level of `Box`ing.
+- `Frame::debug` and `Frame::debug_full`
+
+### Changed
+
+- `Frame`'s `Debug` representation no longer includes its children.
+  - This does not affect `Exn`'s `Debug` representation.
+
 ## [0.3.0] - 2026-01-23
 
 ### Changed
