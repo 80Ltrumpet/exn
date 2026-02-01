@@ -23,7 +23,7 @@ license = "Apache-2.0"
 publish = false
 readme = "README.md"
 repository = "https://github.com/80Ltrumpet/exn"
-version = "0.3.0"
+version = "0.3.1"
 
 [dev-dependencies]
 anyhow = "1"
